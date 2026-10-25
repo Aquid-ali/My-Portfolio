@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        canvas {
+            display: block;
+        }
+        #loading {
+            position: absolute;
+            color: #333;
+            font-family: sans-serif;
+            font-size: 14px;
+            pointer-events: none;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="loading">Loading Fonts...</div>
+    <canvas id="canvas"></canvas>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const loading = document.getElementById('loading');
+
+        // Configuration
+        const config = {
+            text: "جُمان علی",
+            fontBaseSize: 120, 
+            fontFamily: "'Noto Nastaliq Urdu', serif",
+            color: '#556B2F',
+            slant: -0.3, 
+            glow: 20,
+            particleGap: 2, 
+            mouseRadius: 80
+        };
+
+        let canvasWidth, canvasHeight;
+        let textParticles = [];    
+        let mouse = { x: null, y: null };
+
+        // Text Metrics
+        let textMetrics = {
+            width: 0,
+            x: 0,
+            y: 0,
+            fontSize: 0
+        };
+
+        // --- Input Handling ---
+        window.addEventListener('mousemove', (e) => {
+            mouse.x = e.x;
+            mouse.y = e.y;
+        });
+        window.addEventListener('mouseleave', () => {
+            mouse.x = null;
+            mouse.y = null;
+        });
+
+        // --- Particle Class ---
+        class TextParticle {
+            constructor(targetX, targetY) {
+                this.originX = targetX;
+                this.originY = targetY;
+                
+                // Start scattered randomly across the screen
+                this.x = Math.random() * canvasWidth;
+                this.y = Math.random() * canvasHeight;
+                
+                this.size = 1.5;
+                
+                // Movement physics
+                this.vx = 0;
+                this.vy = 0;
+                // Randomize ease slightly for organic "swarming" effect
+                // Lower numbers = slower movement
+                this.ease = Math.random() * 0.03 + 0.02; 
+            }
+
+            update() {
+                // 1. Calculate interaction forces (Mouse)
+                const interaction = this.mouseInteraction();
+                
+                // 2. Physics: Spring mechanism to return to origin
+                
+                let targetX = this.originX;
+                let targetY = this.originY;
+
+                // If mouse is interacting, push away
+                if (interaction.active) {
+                    this.x -= interaction.dx;
+                    this.y -= interaction.dy;
+                } else {
+                    // Ease towards home
+                    this.x += (targetX - this.x) * this.ease;
+                    this.y += (targetY - this.y) * this.ease;
+                }
+            }
+
+            mouseInteraction() {
+                if (mouse.x != null) {
+                    const dx = mouse.x - this.x;
+                    const dy = mouse.y - this.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance < config.mouseRadius) {
+                        const forceDirectionX = dx / distance;
+                        const forceDirectionY = dy / distance;
+                        const force = (config.mouseRadius - distance) / config.mouseRadius;
+                        // Push strength
+                        const pushX = forceDirectionX * force * 15; 
+                        const pushY = forceDirectionY * force * 15;
+
+                        return { active: true, dx: pushX, dy: pushY };
+                    }
+                }
+                return { active: false, dx: 0, dy: 0 };
+            }
+
+            draw(ctx) {
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(this.x, this.y, this.size, this.size);
+            }
+        }
+
+        function resize() {
+            canvasWidth = canvas.width = window.innerWidth;
+            canvasHeight = canvas.height = window.innerHeight;
+            // Re-initialize on resize to keep text centered
+            initParticles();
+        }
+
+        function calculateMetrics() {
+            const scaleFactor = Math.min(canvasWidth / 800, 1.5); 
+            const fontSize = Math.floor(config.fontBaseSize * scaleFactor);
+            ctx.font = `${fontSize}px ${config.fontFamily}`;
+            const m = ctx.measureText(config.text);
+            
+            textMetrics.width = m.width;
+            textMetrics.x = canvasWidth / 2;
+            textMetrics.y = canvasHeight / 2 + (fontSize / 4);
+            textMetrics.fontSize = fontSize;
+        }
+
+        function drawSolidText() {
+            ctx.save();
+            ctx.translate(textMetrics.x, textMetrics.y);
+            ctx.transform(1, 0, config.slant, 1, 0, 0);
+
+            ctx.fillStyle = config.color;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.font = `${textMetrics.fontSize}px ${config.fontFamily}`;
+            ctx.fillText(config.text, 4, 9);
+            ctx.restore();
+        }
+
+        function initParticles() {
+            // 1. Setup Canvas & Metrics
+            calculateMetrics();
+            ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+            
+            // 2. Draw text (invisible to user, used for scanning)
+            drawSolidText();
+
+            // 3. Scan Pixels
+            const scanYStart = Math.max(0, Math.floor(textMetrics.y - textMetrics.fontSize));
+            const scanYEnd = Math.min(canvasHeight, Math.floor(textMetrics.y + textMetrics.fontSize));
+            
+            const scanHeight = scanYEnd - scanYStart;
+
+            // *** FIX: Added check to prevent IndexSizeError if scan dimensions are invalid ***
+            if (scanHeight <= 0 || canvasWidth <= 0) {
+                console.error("Canvas dimensions or scan area are too small to initialize particles. Aborting init.");
+                textParticles = [];
+                return;
+            }
+            
+            const pixels = ctx.getImageData(0, scanYStart, canvasWidth, scanHeight).data;
+            
+            textParticles = [];
+            const gap = config.particleGap;
+
+            for (let y = 0; y < (scanYEnd - scanYStart); y += gap) {
+                for (let x = 0; x < canvasWidth; x += gap) {
+                    const alpha = pixels[(y * canvasWidth + x) * 4 + 3];
+                    if (alpha > 128) {
+                        // Create particle passing the target (x, y)
+                        textParticles.push(new TextParticle(x, y + scanYStart));
+                    }
+                }
+            }
+            console.log(`Created ${textParticles.length} particles`);
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+            
+            // Optional: Add faint trail effect
+            // ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+            // ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+            for (let i = 0; i < textParticles.length; i++) {
+                textParticles[i].update();
+                textParticles[i].draw(ctx);
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        // Initialization
+        window.addEventListener('resize', resize);
+        
+        // Initial size set
+        canvasWidth = canvas.width = window.innerWidth;
+        canvasHeight = canvas.height = window.innerHeight;
+
+        document.fonts.load(`100px "Noto Nastaliq Urdu"`).then(() => {
+            loading.style.display = 'none';
+            initParticles();
+            animate();
+        }).catch(err => {
+            console.log("Font error", err);
+            loading.style.display = 'none';
+            initParticles();
+            animate();
+        });
+
+    </script>
+</body>
+</html>
