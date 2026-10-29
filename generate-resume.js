@@ -1,125 +1,29 @@
-import fs from 'fs';
-import path from 'path';
-
 /**
- * Generates a clean, valid PDF 1.4 document containing Aquid Ali Dhandu's authentic resume.
+ * NOTE: Programmatic resume generation has been replaced with the Resume Upload feature.
+ *
+ * To upload your authentic PDF resume:
+ * 1. Via Command Line:
+ *    node upload-resume.js <path-to-your-resume.pdf>
+ *
+ * 2. Via Web UI:
+ *    Click "Upload Resume" in the portfolio navigation or Hero section.
  */
-function createResumePdf(outputPath) {
-  const content = [
-    "%PDF-1.4",
-    "1 0 obj",
-    "<< /Type /Catalog /Pages 2 0 R >>",
-    "endobj",
-    "2 0 obj",
-    "<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
-    "endobj",
-    "3 0 obj",
-    "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R /F2 6 0 R >> >> >>",
-    "endobj",
-    "4 0 obj",
-    "<< /Length 1700 >>",
-    "stream",
-    "BT",
-    "/F2 20 Tf",
-    "50 740 Td",
-    "(AQUID ALI DHANDU) Tj",
-    "/F1 10 Tf",
-    "0 -18 Td",
-    "(Email: aquidali.dhandu@gmail.com | LinkedIn: linkedin.com/in/aquid-ali | GitHub: github.com/Aquid-ali) Tj",
-    "0 -14 Td",
-    "(Location: Mangalore, Karnataka, India | Expected Graduation: June 2027) Tj",
-    "/F2 12 Tf",
-    "0 -24 Td",
-    "(EDUCATION) Tj",
-    "/F2 10 Tf",
-    "0 -16 Td",
-    "(Canara Engineering College, Mangalore - Bachelor of Engineering in Computer Science and Design) Tj",
-    "/F1 10 Tf",
-    "0 -14 Td",
-    "(CGPA: 8.3 / 10.0 | Graduation: June 2027) Tj",
-    "0 -14 Td",
-    "(Relevant Coursework: Data Structures, Algorithms, DBMS, Operating Systems, Computer Networks, OOP) Tj",
-    "/F2 12 Tf",
-    "0 -24 Td",
-    "(TECHNICAL SKILLS) Tj",
-    "/F1 10 Tf",
-    "0 -16 Td",
-    "(Languages: Python, Java, JavaScript, TypeScript) Tj",
-    "0 -14 Td",
-    "(Frontend: React.js, HTML5, CSS3, Tailwind CSS, Vite) Tj",
-    "0 -14 Td",
-    "(Backend: Node.js, Express.js, Flask, REST APIs) Tj",
-    "0 -14 Td",
-    "(Databases: MongoDB, Mongoose, MySQL) Tj",
-    "0 -14 Td",
-    "(Cloud & DevOps: AWS fundamentals, Docker, Kubernetes, Terraform, CI/CD, GitHub Actions) Tj",
-    "0 -14 Td",
-    "(Tools & Platforms: Git, GitHub, Postman, Linux, VS Code, VMware) Tj",
-    "/F2 12 Tf",
-    "0 -24 Td",
-    "(FEATURED PROJECTS) Tj",
-    "/F2 10 Tf",
-    "0 -16 Td",
-    "(1. DETRAN - AI-Assisted Ransomware Detection System) Tj",
-    "/F1 10 Tf",
-    "0 -14 Td",
-    "(Stack: React, Python, Flask, YARA, ClamAV, Shannon Entropy Analysis) Tj",
-    "0 -14 Td",
-    "(- Built multi-stage file scanner evaluating signature matching (YARA/ClamAV) and entropy density.) Tj",
-    "0 -14 Td",
-    "(- Evaluated threat indicators to detect packed and encrypted malicious payloads.) Tj",
-    "/F2 10 Tf",
-    "0 -18 Td",
-    "(2. Cloud-Based Pharmacy Inventory & Medicine Availability System) Tj",
-    "/F1 10 Tf",
-    "0 -14 Td",
-    "(Stack: React 18, Vite, Tailwind CSS, Node.js, Express.js, MongoDB, Mongoose, JWT) Tj",
-    "0 -14 Td",
-    "(- Implemented role-based access for admins, pharmacists, and clients with batch-level expiry alerts.) Tj",
-    "/F2 10 Tf",
-    "0 -18 Td",
-    "(3. AI-Powered Customer Churn Prediction System) Tj",
-    "/F1 10 Tf",
-    "0 -14 Td",
-    "(Stack: Python, Scikit-learn, Pandas, NumPy, Data Visualization) Tj",
-    "0 -14 Td",
-    "(- Engineered ML classification pipeline achieving calibrated risk probability scoring.) Tj",
-    "/F2 10 Tf",
-    "0 -18 Td",
-    "(4. Full-Stack Employee Management System) Tj",
-    "/F1 10 Tf",
-    "0 -14 Td",
-    "(Stack: MongoDB, Express.js, React, Node.js) Tj",
-    "0 -14 Td",
-    "(- Developed responsive administrative portal for personnel CRUD operations and departmental workflows.) Tj",
-    "ET",
-    "endstream",
-    "endobj",
-    "5 0 obj",
-    "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>",
-    "endobj",
-    "6 0 obj",
-    "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>",
-    "endobj",
-    "xref",
-    "0 7",
-    "0000000000 65535 f ",
-    "0000000009 00000 n ",
-    "0000000058 00000 n ",
-    "0000000115 00000 n ",
-    "0000000249 00000 n ",
-    "0000002003 00000 n ",
-    "0000002071 00000 n ",
-    "trailer",
-    "<< /Size 7 /Root 1 0 R >>",
-    "startxref",
-    "2144",
-    "%%EOF"
-  ].join("\n");
 
-  fs.mkdirSync(path.dirname(outputPath), { recursive: true });
-  fs.writeFileSync(outputPath, content, 'utf-8');
-  console.log(`Resume PDF generated at: ${outputPath}`);
-}
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-createResumePdf(path.resolve('./frontend/public/resume.pdf'));
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+console.log('========================================================================');
+console.log('📄 Resume Generation Replaced with Resume Upload');
+console.log('========================================================================');
+console.log('To set your authentic resume, use one of the following:');
+console.log('');
+console.log('1. Command Line:');
+console.log('   node upload-resume.js <path-to-your-resume.pdf>');
+console.log('   Example: node upload-resume.js ./my-resume.pdf');
+console.log('');
+console.log('2. Web Interface:');
+console.log('   Start the app (npm run dev) and click "Upload Resume" in the UI.');
+console.log('========================================================================\n');

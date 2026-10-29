@@ -1,9 +1,14 @@
 import React from 'react';
-import { ArrowDown, FileDown, Github, Linkedin, Mail, Sparkles } from 'lucide-react';
+import { ArrowDown, FileDown, Github, Linkedin, Mail, Sparkles, Upload } from 'lucide-react';
 import { profileData } from '../data/portfolioData.js';
 import { TerminalWidget } from './TerminalWidget.js';
 
-export const Hero: React.FC = () => {
+interface HeroProps {
+  onOpenResumeModal?: () => void;
+  resumeVersion?: number;
+}
+
+export const Hero: React.FC<HeroProps> = ({ onOpenResumeModal, resumeVersion }) => {
   return (
     <section id="home" className="relative pt-28 pb-16 md:pt-36 md:pb-24 overflow-hidden">
       {/* Background Subtle Gradient Accents */}
@@ -54,15 +59,29 @@ export const Hero: React.FC = () => {
                 <Mail className="w-4 h-4" />
               </a>
 
-              <a
-                href="/resume.pdf"
-                download="Aquid_Ali_Dhandu_Resume.pdf"
-                className="inline-flex items-center gap-2 px-4 py-3 rounded-xl font-medium text-sm text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
-                title="Download Aquid's verified resume PDF"
-              >
-                <FileDown className="w-4 h-4" />
-                <span>Resume (PDF)</span>
-              </a>
+              <div className="inline-flex items-center rounded-xl bg-slate-100/80 dark:bg-slate-800/80 p-1 border border-slate-200 dark:border-slate-700/80">
+                <a
+                  href={`/resume.pdf?v=${resumeVersion || 1}`}
+                  download="Aquid_Ali_Dhandu_Resume.pdf"
+                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg font-medium text-xs sm:text-sm text-slate-700 dark:text-slate-200 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-white dark:hover:bg-slate-700 transition-all shadow-none hover:shadow-sm"
+                  title="Download Aquid's verified resume PDF"
+                >
+                  <FileDown className="w-4 h-4 text-indigo-500" />
+                  <span>Download Resume</span>
+                </a>
+
+                {onOpenResumeModal && (
+                  <button
+                    type="button"
+                    onClick={onOpenResumeModal}
+                    className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg font-medium text-xs sm:text-sm text-indigo-600 dark:text-indigo-400 hover:bg-white dark:hover:bg-slate-700 transition-all shadow-none hover:shadow-sm"
+                    title="Upload or update resume PDF"
+                  >
+                    <Upload className="w-3.5 h-3.5" />
+                    <span>Upload</span>
+                  </button>
+                )}
+              </div>
             </div>
 
             {/* Social Links & Trust Badges */}

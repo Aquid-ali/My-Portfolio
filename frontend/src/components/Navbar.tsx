@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, ArrowUpRight } from 'lucide-react';
+import { Menu, X, ArrowUpRight, Upload } from 'lucide-react';
 import { ThemeToggle } from './ThemeToggle.js';
+
+interface NavbarProps {
+  onOpenResumeModal?: () => void;
+}
 
 interface NavItem {
   name: string;
@@ -16,7 +20,7 @@ const navItems: NavItem[] = [
   { name: 'Contact', href: '#contact' },
 ];
 
-export const Navbar: React.FC = () => {
+export const Navbar: React.FC<NavbarProps> = ({ onOpenResumeModal }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -73,8 +77,19 @@ export const Navbar: React.FC = () => {
           </nav>
 
           {/* Right Action Buttons */}
-          <div className="hidden md:flex items-center space-x-3">
+          <div className="hidden md:flex items-center space-x-2.5">
             <ThemeToggle />
+            {onOpenResumeModal && (
+              <button
+                type="button"
+                onClick={onOpenResumeModal}
+                className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 hover:border-indigo-400 dark:hover:border-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400 bg-white dark:bg-slate-800 shadow-sm transition-all"
+                title="Upload or manage resume PDF"
+              >
+                <Upload className="w-3.5 h-3.5 text-indigo-500" />
+                <span>Resume</span>
+              </button>
+            )}
             <a
               href="#contact"
               className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 shadow-sm shadow-indigo-500/30 transition-all hover:translate-y-[-1px]"
@@ -111,7 +126,20 @@ export const Navbar: React.FC = () => {
               {item.name}
             </a>
           ))}
-          <div className="pt-3 border-t border-slate-100 dark:border-slate-800">
+          <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex flex-col gap-2">
+            {onOpenResumeModal && (
+              <button
+                type="button"
+                onClick={() => {
+                  closeMenu();
+                  onOpenResumeModal();
+                }}
+                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800"
+              >
+                <Upload className="w-4 h-4 text-indigo-500" />
+                <span>Upload / Manage Resume (PDF)</span>
+              </button>
+            )}
             <a
               href="#contact"
               onClick={closeMenu}

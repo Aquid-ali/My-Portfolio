@@ -3,6 +3,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import dotenv from 'dotenv';
 import { contactRouter } from './routes/contactRoutes.js';
+import { resumeRouter } from './routes/resumeRoutes.js';
 
 // Load environment variables
 dotenv.config();
@@ -49,6 +50,7 @@ app.get('/api/health', (req: Request, res: Response) => {
 
 // Mount Routes
 app.use('/api', contactRouter);
+app.use('/api', resumeRouter);
 
 // 404 Handler
 app.use((req: Request, res: Response) => {

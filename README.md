@@ -79,7 +79,8 @@ portfolio/
 │   ├── .env.example                 # Template for backend secrets
 │   ├── package.json
 │   └── tsconfig.json
-├── generate-resume.js               # Resume PDF generator utility
+├── upload-resume.js                 # Resume PDF upload and validation CLI utility
+├── generate-resume.js               # Legacy reference (redirects to upload)
 ├── .gitignore
 └── README.md
 ```
@@ -200,7 +201,7 @@ npm run build
 
 ## 👤 Personalization Checklist for Aquid
 
-- [ ] **Resume**: Place your updated master resume PDF into `frontend/public/resume.pdf` (or customize `generate-resume.js`).
+- [ ] **Resume**: Upload your authentic PDF resume using the web UI (click "Upload" in the Hero section or Navbar) or run `node upload-resume.js <path-to-your-resume.pdf>`.
 - [ ] **Email Provider**: Obtain a free API key from [Resend](https://resend.com) and set `RESEND_API_KEY` in `backend/.env`.
 - [ ] **Social Profiles**: Update `frontend/src/data/portfolioData.ts` if your GitHub or LinkedIn URLs change.
 - [ ] **Project Repositories**: Whenever you make a repository public, set `githubUrl: 'https://github.com/Aquid-ali/...'` inside `portfolioData.ts` to automatically render the "View Source" button.
