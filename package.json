@@ -1,0 +1,26 @@
+{
+  "name": "aquid-portfolio-workspace",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Personal developer portfolio & backend API for Aquid Ali Dhandu",
+  "type": "module",
+  "scripts": {
+    "build": "npm run build --prefix backend && npm run build --prefix frontend",
+    "build:frontend": "npm run build --prefix frontend",
+    "build:backend": "npm run build --prefix backend",
+    "test": "npm test --prefix backend",
+    "dev:frontend": "npm run dev --prefix frontend",
+    "dev:backend": "npm run dev --prefix backend",
+    "upload-resume": "node upload-resume.js"
+  },
+  "keywords": [
+    "portfolio",
+    "developer",
+    "full-stack",
+    "react",
+    "vite",
+    "express"
+  ],
+  "author": "Aquid Ali Dhandu",
+  "license": "MIT"
+}

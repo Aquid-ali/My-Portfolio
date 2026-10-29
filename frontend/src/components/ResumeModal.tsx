@@ -47,7 +47,8 @@ export const ResumeModal: React.FC<ResumeModalProps> = ({
   const fetchResumeInfo = async () => {
     setLoadingInfo(true);
     try {
-      const res = await fetch('/api/resume/info');
+      const apiBase = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '');
+      const res = await fetch(`${apiBase}/api/resume/info`);
       if (res.ok) {
         const data = await res.json();
         if (data.success) {
@@ -171,7 +172,8 @@ export const ResumeModal: React.FC<ResumeModalProps> = ({
       const formData = new FormData();
       formData.append('resume', selectedFile);
 
-      const response = await fetch('/api/resume/upload', {
+      const apiBase = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '');
+      const response = await fetch(`${apiBase}/api/resume/upload`, {
         method: 'POST',
         body: formData,
       });
@@ -299,7 +301,7 @@ export const ResumeModal: React.FC<ResumeModalProps> = ({
                 <RefreshCw className={`w-4 h-4 ${loadingInfo ? 'animate-spin' : ''}`} />
               </button>
               <a
-                href={`/resume.pdf?t=${Date.now()}`}
+                href={`${import.meta.env.BASE_URL}resume.pdf?t=${Date.now()}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 hover:border-indigo-400 hover:text-indigo-600 dark:hover:text-indigo-300 transition-colors"
@@ -308,7 +310,7 @@ export const ResumeModal: React.FC<ResumeModalProps> = ({
                 <span>View</span>
               </a>
               <a
-                href="/resume.pdf"
+                href={`${import.meta.env.BASE_URL}resume.pdf`}
                 download="Aquid_Ali_Dhandu_Resume.pdf"
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 transition-colors"
               >

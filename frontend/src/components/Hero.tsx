@@ -61,7 +61,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenResumeModal, resumeVersion }) 
 
               <div className="inline-flex items-center rounded-xl bg-slate-100/80 dark:bg-slate-800/80 p-1 border border-slate-200 dark:border-slate-700/80">
                 <a
-                  href={`/resume.pdf?v=${resumeVersion || 1}`}
+                  href={`${import.meta.env.BASE_URL}resume.pdf?v=${resumeVersion || 1}`}
                   download="Aquid_Ali_Dhandu_Resume.pdf"
                   className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg font-medium text-xs sm:text-sm text-slate-700 dark:text-slate-200 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-white dark:hover:bg-slate-700 transition-all shadow-none hover:shadow-sm"
                   title="Download Aquid's verified resume PDF"
